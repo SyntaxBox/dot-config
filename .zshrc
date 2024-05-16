@@ -3,6 +3,43 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export BAT_THEME="Coldark-Dark"
+export PATH="$PATH:$HOME/.local/bin"
+
+show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi"
+
+export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
+
+# find-in-file - usage: fif <searchTerm>
+fif() {
+  local search_string
+  if [ ! "$#" -gt 0 ]; then
+    read "search_string?Enter the string to search for: "
+    if [ -z "$search_string" ]; then
+      echo "No search string entered!"
+      return 1
+    fi
+  else
+    search_string=$1
+  fi
+  rg --files-with-matches --no-messages "$search_string" | fzf --preview "bat --style=numbers --color=always {} | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$search_string' || rg --ignore-case --pretty --context 10 '$search_string' {}"
+}
+
+zle -N fif
+bindkey '^F' fif
+
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview "eval 'echo \${}'"         "$@" ;;
+    ssh)          fzf --preview 'dig {}'                   "$@" ;;
+    *)            fzf --preview "$show_file_or_dir_preview" "$@" ;;
+  esac
+}
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -103,16 +140,19 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Navigation aliases
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias ~='cd ~'
+alias cd='z'
+alias ..='z ..'
+alias ...='z ../..'
+alias ....='z ../../..'
+alias ~='z ~'
 
 # Listing aliases
-alias ls='ls --color=auto'
-alias ll='ls -l'
-alias la='ls -la'
+alias ls='eza --color=always --git --no-filesize --icons=always --no-time --no-user --no-permissions'
+alias lc='eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions'
 
+alias ll='eza -l --color=always --long --git --icons=always'
+alias la='eza -a --color=always --long --git --icons=always'
+alias lt='eza --tree --level=2 --icons=always --color=always'
 # Git aliases
 alias ga='git add'
 alias gc='git commit'
@@ -183,3 +223,7 @@ alias agc='sudo apt-get clean'
 alias aar='sudo apt autoremove'
 alias agar='sudo apt-get autoremove'
 
+eval "$(zoxide init zsh)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export PATH="$HOME/.cargo/bin:$PATH"
