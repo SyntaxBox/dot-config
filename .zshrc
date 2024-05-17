@@ -222,6 +222,7 @@ alias agc='sudo apt-get clean'
 # Autoremove
 alias aar='sudo apt autoremove'
 alias agar='sudo apt-get autoremove'
+alias neofetch='neofetch --source ~/.config/neofetch/neofetchlogo.txt'
 
 eval "$(zoxide init zsh)"
 
