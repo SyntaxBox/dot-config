@@ -169,7 +169,9 @@ alias e='exit'
 alias mkdir='mkdir -p'
 alias rm="trash"
 alias rmdir='rm -r'
-
+alias tl="trash-list"
+alias tr="trash-restore"
+alias te="trash-empty"
 # System management aliases
 alias reboot='sudo systemctl reboot'
 alias shutdown='sudo systemctl poweroff'
