@@ -167,6 +167,7 @@ alias e='exit'
 
 # Directory manipulation aliases
 alias mkdir='mkdir -p'
+alias rm="trash"
 alias rmdir='rm -r'
 
 # System management aliases
@@ -226,8 +227,17 @@ alias neofetch='neofetch --source ~/.config/neofetch/neofetchlogo.txt'
 
 # bat
 alias cat="bat"
+# amixer
+alias unmute="amixer set Master unmute"
+alias mute="amixer set Master mute"
+alias unmutes="amixer set Speaker unmute"
+alias mutes="amixer set Speaker mute"
 
 eval "$(zoxide init zsh)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export PATH="$HOME/.cargo/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
